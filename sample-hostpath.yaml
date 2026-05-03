@@ -1,0 +1,28 @@
+apiVersion: v1 
+kind: Pod
+metadata:
+  name: hostpath
+spec:
+  containers: 
+  - name: hostpathcontainer
+    image: nginx
+    volumeMounts:
+    - name: directory-vol # container connects vol-name
+      mountPath: /dir1 # on container which path this vol is mounted
+    - name: dircreate-vol 
+      mountPath: /cache
+    - name: file-vol
+      mountPath: /cache/config.json # on container which file this vol is mounted
+  volumes:
+  - name: directory-vol # vol-name
+    hostpath:  # vol-type 
+      path: /tmp  # path on the node, /tmp is defined vol
+      type: Directory  # hostpath type Directory, existed directory
+  - name: dircreate-vol
+    hostpath:
+      path: /cache
+      type: DirectoryOrCreate # if it is not existed the create
+  - name: file-vol 
+    hostpath:
+      path: /cache/config.json
+      type: FileOrCreate # if its not existed then create

@@ -1,0 +1,48 @@
+kubectl lablel pods pod1 team=development
+kubectl get pods --show-labels
+kubectl label pods pod1 team- # remove team(k:v) from pod1
+kubectl label --overwrite pods pod1 team=test # overwrite/change label on pod1
+kubectl label pods --all foo=bar # add label foo=bar for all pods
+
+### Selector
+
+kubectl get pods -l "app=firstapp" --show-labels
+kubectl get pods -l "app=firstapp,tier=frontend" --show-labels
+kubectl get pods -l "app=firstapp,tier!=frontend" --show-labels
+kubectl get pods -l "app,tier=frontend" --show-labels # equality based selectors
+kubectl get pods -l "app in (firstapp)" --show-labels   # set-based selector
+kubectl get pods -l "app not in (firstapp)" --show-labels   # set-based selector 
+kubectl get pods -l "app=firstapp,app=secondapp" --show-labels  # comma means and => firstapp and second app
+kubectl get pods -l "app in (firstapp,secondapp)" --show-labels  # it means and => firstapp or second app
+
+
+kubectl apply -f sample-pod.yaml
+kubectl get pods -w # always watch
+kubectl label nodes kube hddtype=ssd # after labelling node, pod1 config can run, becoz node is labelled with hddtype: ssd
+kubectl annotate pods sample-pod foo=bar # imperative way
+kubectl get pods --namespaces kube-system
+kubectl get pods --all-namespaces 
+kubectl create namespace development 
+kubectl get pods -n development
+kubectl exec -it namespacepod -n development -- /bin/sh
+
+kubectl config set-context --current --namespace=development # now default ns is dev
+kubectl get pods
+
+### Deployment
+kubectl create deployment firstdeploy --image=nginx:latest --replicas=2
+kubectl get deployments
+kubectl get pods -w 
+kubectl delete pods onepod 
+kubectl scale deployments firstdeploy --replicas=5
+kubectl delete deployments firstdeploy
+
+### Rollout and Rollback
+kubectl set image deployment rolldeploy nginx=httpd:alpine --record 
+kubectl rollout history deployment rolldeploy
+kubectl rollout history deployment rolldeploy --revision=2    # select details of one of the revision
+kubectl rollout undo deployment rolldeploy
+kubectl rollout undo deployment rolldeploy --to-revision=1    # return back to selected revision=1
+kubectl rollout status deployment rolldeploy
+kubectl rollout pause deployment rolldeploy
+kubectl rollout resume deployment rolldeploy
