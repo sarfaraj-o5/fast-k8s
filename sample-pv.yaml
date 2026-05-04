@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysqlpv
+  labels: 
+    app: mysql  # labelled pv with mysql
+spec:
+  capacity:
+    storage: 5Gi    # 5Gibibyte = power of 2; 5Gb= power of 10
+  accessModes:
+    - ReadWriteOnce 
+  persistentVolumeClaimPolicy: Recycle # vol is not deleted, all data in vol will be deleted
+  nfs: 
+    path: /tmp    # binds the path on the NFS server
+    server: 10.255.255.10   # ip of NFS server
+---
+apiVersion: v1 
+kind: PersistentVolume
+metadata: 
+  name: mysqlpv
+  labels:
+    app: mysql
+spec: 
+  capacity:
+    storage: 5Gi
+  accessModes: 
+    - ReadWriteOnce
+  persistentVolumeClaimPolicy: Recycle
+  nfs:
+    path: /
+    server: 10.255.255.10

@@ -46,3 +46,12 @@ kubectl rollout undo deployment rolldeploy --to-revision=1    # return back to s
 kubectl rollout status deployment rolldeploy
 kubectl rollout pause deployment rolldeploy
 kubectl rollout resume deployment rolldeploy
+
+# secrets
+kubectl create secret generic mysecret2 --from-literal=db_server=db.example.com --from-literal=db_username=admin --from-literal=db_password=password1
+kubectl create secret generic mysecret2 --from-file=db_server=server.txt --from-file=db_username=username.txt --from-file=db_password=password.txt
+kubectl create secret generic mysecret4 --from-file=config.json 
+
+## taints & tolerations
+kubectl taint node kube1 app=production:NoSchedule
+kubectl tanit node kube1 app-  ## to delete taint

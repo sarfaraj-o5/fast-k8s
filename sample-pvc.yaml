@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: PersistentVolumeClaim 
+metadata:
+  name: mysqlclaim
+spec:
+  accessModes:
+    - ReadWriteOnce 
+  volumeModes: Filesystem    #volumeModes
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: ""
+  selector:
+    matchLabels:
+      app: mysql  # choose/select "mysql" pv that is defined above
+
+---
+apiVersion: v1 
+kind: PersistentVolumeClaim
+metadata: 
+  accessModes:
+    - ReadWriteOnce
+  volumeModes: Filesystem
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: "" 
+  selector:
+    matchLabels: 
+      app: mysql

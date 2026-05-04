@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: frontendpod
+  labels:
+    app: frontend     # defined labels
+    deployment: test
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+---
+apiVersion: v1
+kind: Pod 
+metadata:
+  name: cachepod
+spec:
+  affinity:
+    podaffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:     # required: if not found not run this pod on any node
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In 
+            values: 
+            - frontend
+        topologyKey: kubernetes.io/hostname  # runthis pod with which pod includes, "app=frontend" on the same worker node
+      prefferedDuringSchedulingIgnoreDuringExecution: # preffered: if not found, run this pod on any node
+      - weight: 1
+        podaffinityTerm: 
+          labelSelector:
+            matchExpressions:
+            - key: branch
+              operator: In 
+              values:
+              - develop 
+          topologyKey: topology.kubernetes.io/zone # run this pod with pod which includes "branch=develop" on the any node in same zone
+    podAntiAffinit:
+      prefferedDuringSchedulingIgnoreDuringExecution: 
+      - weight: 100
+        podaffinityTerm: 
+          labelSelector:
+            matchExpressions:
+            - key: deployment
+              operator: In 
+              values:
+              - prod 
+          topologyKey: topology.kubernetes.io/zone # not run this pod with pod which includes "deployment=prod" on the any node in same zone
+  containers:
+  - name: cachecontainer
+    image: redis:6-alpine

@@ -1,0 +1,17 @@
+apiVersion: batch/v1 
+kind: Job 
+metadata:
+  name: p1 
+spec:
+  parallelism: 2 # each step how many pods start in parallel at a time
+  completions: 10 # no. of pods that run and complete job at the end of time
+  backoffLimit: 5 # to tolerate fail no. of job, after 5 times of failure, not try to continue job, fail the job
+  activeDeadlilneSeconds: 100 # if this job is not completed in 100 seconds, fail the job
+  template: 
+    spec:
+      containers:
+      - name: p1 
+        image: perl 
+        command: ["perl", "-Mbignum=bp1", "-wle", "print bpi(2000)"]
+      restartPolicy: Never    # OnFalilure
+
